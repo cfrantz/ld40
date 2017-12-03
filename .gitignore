@@ -1,0 +1,4 @@
+*.nes
+*.nes.sram
+*.map
+imgui.ini
