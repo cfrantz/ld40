@@ -24,7 +24,7 @@ level-util.o: level-util.s
 	ca65 $*.s
 
 lildigger2.nes: nes-mmc3.cfg crt0-mmc3.o level-util.o $(OBJS)
-	ld65 -C nes-mmc3.cfg --mapfile lildigger.map -o $@ \
+	ld65 -C nes-mmc3.cfg --mapfile lildigger2.map -o $@ \
 		crt0-mmc3.o level-util.o \
 		$(OBJS) \
 		$(NESLIB)

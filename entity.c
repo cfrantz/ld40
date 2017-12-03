@@ -119,8 +119,8 @@ uint8_t player_keys;
 uint16_t player_score;
 uint16_t player_energy;
 uint8_t player_etick;
-int32_t player_camera;
-xcoord_t player_oldpos;
+int16_t player_camera;
+int16_t player_oldpos;
 uint16_t scroll_pos;
 
 uint16_t __fastcall__ entity_left_collision(int16_t delta) {
@@ -317,8 +317,8 @@ void __fastcall__ entity_compute_position(uint8_t entity) {
     entity_vy[cur_index] = vy;
 
     entity_compute_position_x();
-    if (cur_index == 0 && entity_px[0] < player_camera) {
-        entity_px[0] = player_camera;
+    if (cur_index == 0 && TOINT(entity_px[0]) < player_camera) {
+        entity_px[0] = TOFIX(player_camera);
     }
     entity_compute_position_y();
 }
@@ -339,13 +339,13 @@ void __fastcall__ entity_taken_reset(void) {
 }
 
 void __fastcall__ entity_draw(uint8_t index) {
-    static uint8_t id, sprid, attr;
+    static uint8_t id, sprid, attr, x0;
     static uint16_t camx;
-    static xcoord_t camera;
+    static int16_t camera;
     id = entity_id[index];
 
     if (id == 0) {
-        camera = entity_px[0] - TOFIX(128);
+        camera = TOINT(entity_px[0]) - 128;
         if (camera > player_camera)
             player_camera = camera;
         if (player_camera < 0)
@@ -354,28 +354,28 @@ void __fastcall__ entity_draw(uint8_t index) {
             prepare_ppu_macro(scroll_pos, true);
             scroll_pos = 0;
         }
-        if ((player_camera ^ player_oldpos) & TOFIX(16)) {
+        if ((player_camera ^ player_oldpos) & 16) {
             // Tile position + next screen to the right
-            scroll_pos = (TOINT(player_camera) / 16) + 0x10;
+            scroll_pos = (player_camera / 16) + 0x10;
             prepare_ppu_macro(scroll_pos, false);
         }
-        if ((player_camera ^ player_oldpos) & TOFIX(0xFF00)) {
+        if ((player_camera ^ player_oldpos) & 0xFF00) {
             // Spawn next screen
-            entity_spawn_screen((TOINT(player_camera) / 256)+ 1);
+            entity_spawn_screen((player_camera / 256) + 1);
         }
         player_oldpos = player_camera;
-        scroll(TOINT(player_camera), 31);
+        scroll(player_camera, 31);
 
         // player invisible?
         if (player_inv & 2)
             return;
     }
 
-    camx = TOINT(entity_px[index] - player_camera);
+    camx = TOINT(entity_px[index]) - player_camera;
     // if the high byte is set the sprite is not on screen
     if (camx >> 8)
         return;
-    xx = camx;
+    x0 = camx;
     yy = TOINT(entity_py[index]);
     sprid = entity_sprite_id[index];
     attr = entity_sprite_attr[index];
@@ -383,14 +383,14 @@ void __fastcall__ entity_draw(uint8_t index) {
     if (id & 1) {
         // Entities with odd id's are 2x wide
         if (entity_dir[index] > 0) {
-            spridx = oam_spr(xx, yy, sprid+2, attr, spridx);
-            spridx = oam_spr(xx+8, yy, sprid, attr, spridx);
+            spridx = oam_spr(x0, yy, sprid+2, attr, spridx);
+            spridx = oam_spr(x0+8, yy, sprid, attr, spridx);
         } else {
-            spridx = oam_spr(xx, yy, sprid, attr, spridx);
-            spridx = oam_spr(xx+8, yy, sprid+2, attr, spridx);
+            spridx = oam_spr(x0, yy, sprid, attr, spridx);
+            spridx = oam_spr(x0+8, yy, sprid+2, attr, spridx);
         }
     } else {
-        spridx = oam_spr(xx, yy, sprid, attr, spridx);
+        spridx = oam_spr(x0, yy, sprid, attr, spridx);
     }
 
 }
@@ -411,7 +411,6 @@ void __fastcall__ entity_draw_stats(void) {
     spridx = oam_spr(56, 8, 0xe1 + (en & 0x1E), 3, spridx);
     en >>= 4;
     spridx = oam_spr(48, 8, 0xe1 + (en & 0x1E), 3, spridx);
-#endif
     extern uint8_t hud[32];
     static uint8_t val;
     hud[5] = 0x30 + player_keys;
@@ -430,6 +429,7 @@ void __fastcall__ entity_draw_stats(void) {
     val = player_score >> 8;
     hud[28] = 0x30 + (val & 0x0F); val >>= 4;
     hud[27] = 0x30 + (val & 0x0F);
+#endif
 }
 
 
@@ -444,9 +444,9 @@ void __fastcall__ entity_set_player(uint16_t x, uint8_t y, uint8_t chkpoint) {
     entity_sprite_id[0] = entity_sprites[0][0];
     player_energy = 0x200;
 
-    player_camera = entity_px[0] - TOFIX(128);
+    player_camera = TOINT(entity_px[0]) - 128;
     if (player_camera < 0) player_camera = 0;
-    player_oldpos = player_camera - TOFIX(256);
+    player_oldpos = player_camera - 256;
 
     player_state = PLAYER_ALIVE;
     if (chkpoint) {
@@ -690,7 +690,7 @@ uint8_t __fastcall__ entity_player_control(void) {
             ++player_jump;
         }
         if (player_jump > 0 && player_jump < 9) {
-            entity_ay[0] = -0x200;
+            entity_ay[0] = -FRAC(2,0);
             ++player_jump;
         }
     } else {

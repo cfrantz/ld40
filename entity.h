@@ -22,6 +22,7 @@ enum PlayerState {
 };
 
 typedef uint32_t xcoord_t;
+typedef int32_t scoord_t;
 #define FIXPOINT    (8)
 #define FRAC(i,p)     (((i)<<FIXPOINT) + (( (p)<<FIXPOINT ) / 100 ) )
 #define TOFIX(v)    ((v) << FIXPOINT)
