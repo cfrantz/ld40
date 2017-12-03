@@ -71,7 +71,7 @@ const uint8_t bittable[8] = {
 //////////////////////////////////////////////////////////////////////
 uint8_t entity_id[MAX_ENTITY];
 uint32_t entity_px[MAX_ENTITY];
-uint16_t entity_py[MAX_ENTITY];
+int16_t entity_py[MAX_ENTITY];
 
 int16_t entity_ax[MAX_ENTITY];
 int16_t entity_ay[MAX_ENTITY];
@@ -108,12 +108,9 @@ extern uint8_t player_pad;
 extern uint8_t player_pad_changed;;
 extern uint8_t spridx;
 extern uint8_t player_room;
-extern uint8_t player_rx, player_ry;
 uint8_t player_state;
 uint8_t player_jump;
-uint8_t player_ckpt_x, player_ckpt_y;
-uint8_t player_ckpt_rx, player_ckpt_ry;
-uint8_t player_ckpt_room;
+uint16_t player_ckpt_x, player_ckpt_y;
 uint8_t player_hit;
 uint8_t player_inv;
 uint8_t player_keys;
@@ -122,7 +119,7 @@ uint16_t player_energy;
 uint8_t player_etick;
 int32_t player_camera;
 uint32_t player_oldpos;
-uint8_t scrolling;
+uint16_t scroll_pos;
 
 uint16_t __fastcall__ entity_left_collision(int16_t delta) {
     xx = (px + delta) >> 8;
@@ -318,6 +315,9 @@ void __fastcall__ entity_compute_position(uint8_t entity) {
     entity_vy[cur_index] = vy;
 
     entity_compute_position_x();
+    if (cur_index == 0 && entity_px[0] < player_camera) {
+        entity_px[0] = player_camera;
+    }
     entity_compute_position_y();
 }
 
@@ -339,20 +339,27 @@ void __fastcall__ entity_taken_reset(void) {
 void __fastcall__ entity_draw(uint8_t index) {
     static uint8_t id, sprid, attr;
     static uint16_t camx;
+    static uint32_t camera;
     id = entity_id[index];
 
     if (id == 0) {
-        player_camera = entity_px[0] - 0x00008000;
-        if (player_camera < 0) player_camera = 0;
-        if (scrolling) {
-            prepare_ppu_macro((player_oldpos >> 12) + 0x10, true);
-            scrolling = 0;
+        camera = entity_px[0] - 0x00008000;
+        if (camera > player_camera)
+            player_camera = camera;
+        if (player_camera < 0)
+            player_camera = 0;
+        if (scroll_pos) {
+            prepare_ppu_macro(scroll_pos, true);
+            scroll_pos = 0;
         }
         if ((player_camera ^ player_oldpos) & 0x1000) {
-            scrolling = 1;
-            prepare_ppu_macro((player_camera >> 12) + 0x10, false);
-            player_oldpos = player_camera;
+            scroll_pos = (player_camera >> 12) + 0x10;
+            prepare_ppu_macro(scroll_pos, false);
         }
+        if ((player_camera ^ player_oldpos) & 0xFF0000) {
+            entity_spawn_screen((player_camera >> 16) + 1);
+        }
+        player_oldpos = player_camera;
         scroll(player_camera>>8, 31);
 
         // player invisible?
@@ -360,6 +367,7 @@ void __fastcall__ entity_draw(uint8_t index) {
             return;
     }
 
+    xx = entity_px[index] >> 8;
     camx = (entity_px[index] - player_camera) >> 8;
     // if the high byte is set the sprite is not screen
     if (camx >> 8)
@@ -422,7 +430,7 @@ void __fastcall__ entity_draw_stats(void) {
 }
 
 
-void __fastcall__ entity_set_player(uint16_t x, uint8_t y) {
+void __fastcall__ entity_set_player(uint16_t x, uint8_t y, uint8_t chkpoint) {
     entity_ax[0] = 0;
     entity_ay[0] = 0;
     entity_vx[0] = 0;
@@ -432,16 +440,17 @@ void __fastcall__ entity_set_player(uint16_t x, uint8_t y) {
     entity_on_ground[0] = 1;
     entity_sprite_id[0] = entity_sprites[0][0];
     player_energy = 0x200;
+
+    player_camera = entity_px[0] - 0x8000;
+    if (player_camera < 0) player_camera = 0;
+    player_oldpos = player_camera - 0x10000;
+
     player_state = PLAYER_ALIVE;
-#if 0
     if (chkpoint) {
         player_ckpt_x = x;
         player_ckpt_y = y;
-        player_ckpt_rx = player_rx;
-        player_ckpt_ry = player_ry;
-        player_ckpt_room = player_room;
     }
-#endif
+
 }
 
 void __fastcall__ entity_new(uint8_t id, uint16_t x, uint8_t y) {
@@ -454,7 +463,7 @@ void __fastcall__ entity_new(uint8_t id, uint16_t x, uint8_t y) {
             entity_ay[i] = 0;
             entity_vx[i] = 0;
             entity_vy[i] = 0;
-            entity_px[i] = x<<8;
+            entity_px[i] = (uint32_t)x << 8;
             entity_py[i] = y<<8;
             entity_dir[i] = 0;
             entity_anim[i] = 0;
@@ -549,9 +558,6 @@ void __fastcall__ entity_update(void) {
         if (entity_player_collision()) {
             player_ckpt_x = entity_px[0] >> 8;
             player_ckpt_y = entity_py[0] >> 8;
-            player_ckpt_rx = player_rx;
-            player_ckpt_ry = player_ry;
-            player_ckpt_room = player_room;
         }
         break;
     case ENDPOINT:
@@ -599,6 +605,9 @@ uint8_t __fastcall__ entity_player_addpoints(void) {
 uint8_t __fastcall__ entity_player_control(void) {
     static uint8_t on_ladder, a;
 
+    xx = entity_px[0] >> 8;
+    yy = entity_py[0] >> 8;
+
     if (player_state == PLAYER_DONE)
         return player_state;
 
@@ -617,6 +626,16 @@ uint8_t __fastcall__ entity_player_control(void) {
         player_energy = bcd_add16(player_energy, 0xF999);
         player_etick = 0;
     }
+    if (yy > 224) {
+        player_hit = 180;
+        entity_sprite_id[0] = 0x07;
+        entity_ax[0] = 0;
+        entity_ay[0] = 0;
+        entity_vx[0] = 0;
+        entity_vy[0] = 0;
+        entity_py[0] = 224 << 8;
+        player_state = PLAYER_DEAD;
+    }
     if (player_inv) --player_inv;
     if (player_hit) {
         --player_hit;
@@ -628,9 +647,6 @@ uint8_t __fastcall__ entity_player_control(void) {
     a = (entity_anim[0] / 4) & 3;
     entity_sprite_attr[0] = (entity_dir[0] < 0) ? 0x40 : 0;
     entity_sprite_id[0] = entity_sprites[0][a];
-
-    xx = entity_px[0] >> 8;
-    yy = entity_py[0] >> 8;
 
     on_ladder = (screen_tile(xx+4, yy+0) == 1 || screen_tile(xx+4, yy+15) == 1);;
     if (on_ladder) {
@@ -678,11 +694,20 @@ uint8_t __fastcall__ entity_player_control(void) {
 }
 
 void __fastcall__ entity_player_checkpoint(void) {
-#if 0
-    player_rx = player_ckpt_rx;
-    player_ry = player_ckpt_ry;
-    player_room = player_ckpt_room;
     entity_set_player(player_ckpt_x, player_ckpt_y, false);
-    entity_load_screen();
-#endif
 }
+
+
+void __fastcall__ entity_spawn_screen(uint8_t scrn) {
+    static uint8_t i;
+    for(i=0xD0; i != 0; i+=2) {
+        xx = level0[scrn][i];
+        if (xx) {
+            yy = 0x20 + ((xx & 0x0F) << 4);
+            xx &= 0xF0;
+            xx |= scrn << 8;
+            entity_new(level0[scrn][i+1], xx, yy);
+        }
+    }
+}
+

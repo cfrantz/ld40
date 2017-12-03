@@ -2,8 +2,8 @@
 #include "levels.h"
 
 #define ____ 0x00
-#pragma rodata-name(push, "LVLDAT0")
-const struct LevelHeader header0 = {
+#pragma rodata-name(push, "LVLDAT1")
+const struct LevelHeader header1 = {
     "Title Screen",
 {
     // Background palette
@@ -90,99 +90,76 @@ ____,____,____,____,____,____,____,____,____,____,____,____,____,____,____,____,
     1,         // Next bank
 };
 
-const uint8_t level0[][16*16] = {
-// LVLDAT0 -- screen 0
-"   EEEEEEEEE    "
-"   E       E    "
-"   E  +,   E    "
-"   E  -./  E    "
-"   E       E    "
-"   EEEEEEEEE    "
-"                "
-"                "
-"                "
-"                "
-"ggggggggggAggggg"
-"FIIIIIIIIIAIIIIF"
-"F@@@@@@@@@A@@@@F"
+const uint8_t level1[][16*16] = {
+// LVLDAT1 -- screen 0
+"E               "  // 0
+"E               "  // 1
+"E               "  // 2
+"E               "  // 3
+"E               "  // 4
+"E               "  // 5
+"E               "  // 6
+"E               "  // 7
+"E               "  // 8
+"E               "  // 9
+"gggggggggggggggg"  // A
+"FIIIIIIIIIIIIIIF"  // B
+"F@@@@@@@@@@@@@@F"  // C
+"\x49\x07"
 "",
 
-// LVLDAT0 -- screen 1
-"                "
-"   EEEEEEEEEE   "
-"   E        E   "
-"   E %&'()* E   "
-"   E        E   "
-"   E        E   "
-"   EEEEEEEEEE   "
-"                "
-"                "
-"                "
-"gggggggggggggggg"
-"FIIIIIIIIIIIIIIF"
-"F@@@@@@@@@@@@@@F"
-"\xe9\x01",
-
-// LVLDAT0 -- screen 2
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"gggggggggggggggg"
-"FIIIIIIIIIIIIIIF"
-"F@@@@@@@@@@@@@@F"
-"\xe9\x03",
-
-// LVLDAT0 -- screen 3
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"gggggggggggggggg"
-"FIIIIIIIIIIIIIIF"
-"F@@@@@@@@@@@@@@F"
-"F@@@@@@@@@@@@@@F"
+// LVLDAT1 -- screen 01
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"        E       "  // 4
+"                "  // 5
+"                "  // 6
+"      EEEEE     "  // 7
+"                "  // 8
+"                "  // 9
+"gggggggggggggggg"  // A
+"FIIIIIIIIIIIIIIF"  // B
+"F@@@@@@@@@@@@@@F"  // C
+"\x86\x04\xa6\x04" "\xe9\x03"
 "",
 
-// LVLDAT0 -- screen 4
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"                "
-"gggggggggggggggg"
-"FIIIIIIIIIIIIIIF"
-"F@@@@@@@@@@@@@@F"
-"F@@@@@@@@@@@@@@F"
-"F@@@@@@@@@@@@@@F"
+// LVLDAT1 -- screen 02
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"                "  // 4
+"                "  // 5
+"                "  // 6
+"   DD           "  // 7
+"   DD      DD   "  // 8
+"   DD      DD   "  // 9
+"gggggggggggggggg"  // A
+"FIIIIIIIIIIIIIIF"  // B
+"F@@@@@@@@@@@@@@F"  // C
+"\x99\x01"
 "",
+
+
+// LVLDAT1 -- screen xx
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"                "  // 4
+"                "  // 5
+"                "  // 6
+"                "  // 7
+"                "  // 8
+"                "  // 9
+"gggggggggggggggg"  // A
+"FIIIIIIIIIIIIIIF"  // B
+"F@@@@@@@@@@@@@@F"  // C
+"",
+
 
 
 };
 #pragma rodata-name(pop)
-
-#pragma rodata-name(push, "LVLDAT2")
-const char name2[] = "LVLDAT2";
-#pragma rodata-name(pop)
-
-#pragma rodata-name(push, "LVLDAT3")
-const char name3[] = "LVLDAT3";
-#pragma rodata-name(pop)
-#pragma rodata-name(push, "LVLDAT4")
-const char name4[] = "LVLDAT4";
-#pragma rodata-name(pop)
-

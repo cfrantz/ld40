@@ -51,6 +51,7 @@ void pause(void) {
     spridx = oam_spr(x, y, 0xd9, 3, spridx);
 }
 
+static uint8_t tm;
 void main(void)
 {
     static uint8_t state;
@@ -83,29 +84,19 @@ void main(void)
         switch(game_state) {
             case TITLE_SCREEN:
                 scroll(framenum, 31);
-                /*
-                entity_newframe();
-                entity_set_player(128, 160, false);
-                entity_update_all();
-                entity_draw(0);
-                entity_draw_all();
-                */
-
                 if (player_pad_changed & PAD_START) {
+                    load_bank = header0.next_bank;
                     game_state = LOAD_NEXT;
                 }
                 break;
-#if 1
             case LOAD_NEXT:
+                ppu_off();
                 set_mmc3_low_bank(load_bank);
-                player_room = header0.start_room;
-                player_rx = header0.start_rx;
-                player_ry = header0.start_ry;
-                //ppu_off();
+                copy_to_vram_simple(0, 0);
+                entity_spawn_screen(0);
                 entity_taken_reset();
-                //entity_set_screen(player_room);
-                entity_set_player(header0.start_px, header0.start_py);
-                //entity_load_screen();
+                entity_set_player(header0.start_px, header0.start_py, true);
+                ppu_on_all();
                 game_state = GAME;
                 break;
             case GAME:
@@ -121,10 +112,10 @@ void main(void)
                         break;
                     }
                 } else {
-                    // tm = readreg8(0x4019);
+                    tm = readreg8(0x4019);
                     entity_update_all();
                     entity_compute_position(0);
-                    // tm = readreg8(0x4019);
+                    tm = readreg8(0x4019);
                 }
                 entity_draw(0);
                 entity_draw_all();
@@ -141,7 +132,6 @@ void main(void)
                 if (player_pad_changed & PAD_START)
                     game_state = GAME;
                 break;
-#endif
             default:
                 game_state = GAME;
         }
