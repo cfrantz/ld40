@@ -26,7 +26,7 @@
 
 //                                  0  1  2  3  4  5  6  7  8  9
 const uint8_t entity_palette[] = {  0, 1, 3, 1, 3, 3, 3, 0, 0, 1,};
-const uint8_t entity_physics[] = {  1, 0, 0, 1, 0, 0, 0, 1, 0, 0,};
+const uint8_t entity_physics[] = {  1, 0, 0, 1, 0, 0, 0, 0, 0, 0,};
 
 //                                  0  1   2   3   4   5   6   7   8   9
 const uint8_t entity_colx_x0[] = {  1, 0,  0,  0,  0,  0,  0,  0,  0,  0, };
@@ -488,8 +488,18 @@ void __fastcall__ entity_update(void) {
     static uint16_t x0, x1;
 
     cur_id = entity_id[cur_index];
-    if (entity_physics[cur_id])
+    if (entity_physics[cur_id]) {
         entity_compute_position(cur_index);
+    }
+
+    x1 = TOINT(entity_px[cur_index]);
+    delta = x1 - player_camera;
+    // Entity is too far behind the camera, kill it
+    if (delta < -64) {
+        entity_id[cur_index] = 0;
+        return;
+    }
+    x0 = TOINT(entity_px[0]);
 
     a = (entity_anim[cur_index] / 4) & 3;
     if (entity_dir[cur_index] > 0) {
@@ -499,8 +509,6 @@ void __fastcall__ entity_update(void) {
     }
     entity_sprite_id[cur_index] = entity_sprites[cur_id][a];
     ++entity_anim[cur_index];
-    x0 = TOINT(entity_px[0]);
-    x1 = TOINT(entity_px[cur_index]);
     switch(cur_id) {
     case SNAKE:
         entity_dir[cur_index] = (x0 - x1) ? -1 : 1;
