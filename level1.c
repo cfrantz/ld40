@@ -103,8 +103,8 @@ const uint8_t level1[][16*16] = {
 "E               "  // 8
 "E               "  // 9
 "gggggggggggggggg"  // A
-"FIIIIIIIIIIIIIIF"  // B
-"F@@@@@@@@@@@@@@F"  // C
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
 "\x49\x07"
 "",
 
@@ -120,9 +120,9 @@ const uint8_t level1[][16*16] = {
 "                "  // 8
 "                "  // 9
 "gggggggggggggggg"  // A
-"FIIIIIIIIIIIIIIF"  // B
-"F@@@@@@@@@@@@@@F"  // C
-"\x86\x04\xa6\x04" "\xe9\x03"
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
+"\x86\x04\xa6\x04\xe9\x03"
 "",
 
 // LVLDAT1 -- screen 02
@@ -137,11 +137,108 @@ const uint8_t level1[][16*16] = {
 "   DD      DD   "  // 8
 "   DD      DD   "  // 9
 "gggggggggggggggg"  // A
-"FIIIIIIIIIIIIIIF"  // B
-"F@@@@@@@@@@@@@@F"  // C
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
 "\x99\x01"
 "",
 
+
+// LVLDAT1 -- screen 03
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"                "  // 4
+"                "  // 5
+"                "  // 6
+"    DD          "  // 7
+"    DD          "  // 8
+"    DD          "  // 9
+"ggggggggggggg   "  // A
+"FFFFFFFFFFFFF   "  // B
+"FFFFFFFFFFFFF   "  // B
+"",
+
+// LVLDAT1 -- screen 04
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"             EEE"  // 4
+"                "  // 5
+"                "  // 6
+"     EEEEEEEEEEE"  // 7
+"                "  // 8
+"                "  // 9
+"gggggggggggggggg"  // A
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
+"\xe3\x04\xe6\x04",
+
+// LVLDAT1 -- screen 05
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"EEE             "  // 4
+"                "  // 5
+"                "  // 6
+"EEEEEEEE        "  // 7
+"    E           "  // 8
+"    E           "  // 9
+"    Eggggggggggg"  // A
+"    EFFFFFFFFFFF"  // B
+"    EFFFFFFFFFFF"  // B
+"\x26\x07\x13\x03"
+"",
+
+// LVLDAT1 -- screen 06
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"                "  // 3
+"                "  // 4
+"                "  // 5
+"                "  // 6
+"      D  D      "  // 7
+"     DD  DD     "  // 8
+"    DDD  DDD    "  // 9
+"ggggggg  ggggggg"  // A
+"FFFFFFF  FFFFFFF"  // B
+"FFFFFFF  FFFFFFF"  // B
+"",
+
+// LVLDAT1 -- screen 07
+"                "  // 0
+"                "  // 1
+"                "  // 2
+"         DDD    "  // 3
+"        DDDD    "  // 4
+"       DDDDD    "  // 5
+"      DDDDDD    "  // 6
+"     DDDDDDD    "  // 7
+"    DDDDDDDD    "  // 8
+"   DDDDDDDDD    "  // 9
+"gggggggggggggggg"  // A
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
+"",
+
+// LVLDAT1 -- screen 08
+"                "  // 0
+"                "  // 1
+"        EEEE    "  // 2
+"        E@@E    "  // 3
+"    E E EEEE E E"  // 4
+"    EEE EEEE EEE"  // 5
+"    EEEEEEEEEEEE"  // 6
+"    E@EEEEEEEE@E"  // 7
+"    EEEEE@@EEEEE"  // 8
+"    EEEEE@@EEEEE"  // 9
+"gggggggggggggggg"  // A
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
+"\x29\x09",
 
 // LVLDAT1 -- screen xx
 "                "  // 0
@@ -155,10 +252,9 @@ const uint8_t level1[][16*16] = {
 "                "  // 8
 "                "  // 9
 "gggggggggggggggg"  // A
-"FIIIIIIIIIIIIIIF"  // B
-"F@@@@@@@@@@@@@@F"  // C
+"FFFFFFFFFFFFFFFF"  // B
+"FFFFFFFFFFFFFFFF"  // B
 "",
-
 
 
 };
