@@ -326,7 +326,7 @@ void __fastcall__ entity_compute_position(uint8_t entity) {
 void __fastcall__ entity_newframe(void) {
     spridx = 0;
     for(cur_index=0; cur_index<MAX_ENTITY; ++cur_index) {
-        entity_ay[cur_index] = FRAC(0,75);
+        entity_ay[cur_index] = FRAC(0,66);
     }
 }
 
@@ -698,7 +698,7 @@ uint8_t __fastcall__ entity_player_control(void) {
             ++player_jump;
         }
         if (player_jump > 0 && player_jump < 9) {
-            entity_ay[0] = -FRAC(2,0);
+            entity_ay[0] = -FRAC(2,50);
             ++player_jump;
         }
     } else {
