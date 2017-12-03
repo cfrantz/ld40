@@ -121,6 +121,7 @@ uint16_t player_energy;
 uint8_t player_etick;
 int16_t player_camera;
 int16_t player_oldpos;
+int16_t player_maxx;
 uint16_t scroll_pos;
 
 uint16_t __fastcall__ entity_left_collision(int16_t delta) {
@@ -277,6 +278,7 @@ void __fastcall__ entity_compute_position_y(void) {
 
 void __fastcall__ entity_compute_position(uint8_t entity) {
     static int16_t vx, vy, fx;
+    static int16_t maxx;
 
     cur_index = entity;
     cur_id = entity_id[cur_index];
@@ -301,11 +303,16 @@ void __fastcall__ entity_compute_position(uint8_t entity) {
 
     vx += entity_ax[cur_index];
     vy += entity_ay[cur_index];
+    if (cur_index) {
+        maxx = entity_maxx[cur_id];
+    } else {
+        maxx = player_maxx;
+    }
 
-    if (vx > entity_maxx[cur_id]) {
-        vx = entity_maxx[cur_id];
-    } else if (vx < -entity_maxx[cur_id]) {
-        vx = -entity_maxx[cur_id];
+    if (vx > maxx) {
+        vx = maxx;
+    } else if (vx < -maxx) {
+        vx = -maxx;
     }
     if (vy > entity_maxy[cur_id]) {
         vy = entity_maxy[cur_id];
@@ -317,8 +324,11 @@ void __fastcall__ entity_compute_position(uint8_t entity) {
     entity_vy[cur_index] = vy;
 
     entity_compute_position_x();
-    if (cur_index == 0 && TOINT(entity_px[0]) < player_camera) {
-        entity_px[0] = TOFIX(player_camera);
+    if (cur_index == 0) {
+        xx = TOINT(entity_px[0]);
+        if (xx < player_camera) {
+            entity_px[0] = TOFIX((xcoord_t)player_camera);
+        }
     }
     entity_compute_position_y();
 }
@@ -478,7 +488,7 @@ void __fastcall__ entity_new(uint8_t id, uint16_t x, uint8_t y) {
 
 void __fastcall__ entity_take(void) {
     xx = TOINT(entity_px[cur_index]);
-    entity_taken[player_room] |= bittable[xx>>5];
+    entity_taken[xx>>8] |= bittable[xx>>5];
     entity_id[cur_index] = 0;
 }
 
@@ -693,6 +703,11 @@ uint8_t __fastcall__ entity_player_control(void) {
         entity_ax[0] = 0;
     }
 
+    if (player_pad & PAD_B) {
+        player_maxx = FRAC(2,25);
+    } else {
+        player_maxx = entity_maxx[0];
+    }
     if (player_pad & PAD_A) {
         if (entity_on_ground[0] && player_jump == 0) {
             ++player_jump;
@@ -708,7 +723,21 @@ uint8_t __fastcall__ entity_player_control(void) {
 }
 
 void __fastcall__ entity_player_checkpoint(void) {
+    static int scrn;
+    ppu_off();
+    entity_kill_all();
+    scrn = player_ckpt_x >> 8;
+    if (scrn) {
+        copy_to_vram_simple(scrn-1, 0);
+        copy_to_vram_simple(scrn, 1);
+        entity_spawn_screen(scrn-1);
+    } else {
+        copy_to_vram_simple(scrn, 0);
+        copy_to_vram_simple(scrn+1, 1);
+        entity_spawn_screen(scrn);
+    }
     entity_set_player(player_ckpt_x, player_ckpt_y, false);
+    ppu_on_all();
 }
 
 
