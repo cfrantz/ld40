@@ -2,3 +2,5 @@
 *.nes.sram
 *.map
 imgui.ini
+*.swp
+*.o
