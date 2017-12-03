@@ -72,7 +72,7 @@ const uint8_t bittable[8] = {
 //
 //////////////////////////////////////////////////////////////////////
 uint8_t entity_id[MAX_ENTITY];
-uint32_t entity_px[MAX_ENTITY];
+xcoord_t entity_px[MAX_ENTITY];
 int16_t entity_py[MAX_ENTITY];
 
 int16_t entity_ax[MAX_ENTITY];
@@ -97,7 +97,7 @@ uint8_t entity_taken[256];
 //////////////////////////////////////////////////////////////////////
 static uint8_t cur_id;
 static uint8_t cur_index;
-static uint32_t px;
+static xcoord_t px;
 static uint16_t py;
 static uint16_t xx;
 static uint8_t yy;
@@ -120,7 +120,7 @@ uint16_t player_score;
 uint16_t player_energy;
 uint8_t player_etick;
 int32_t player_camera;
-uint32_t player_oldpos;
+xcoord_t player_oldpos;
 uint16_t scroll_pos;
 
 uint16_t __fastcall__ entity_left_collision(int16_t delta) {
@@ -211,7 +211,7 @@ void __fastcall__ entity_compute_position_x(void) {
     if (vx > 0) {
         c = entity_right_collision(vx);
         if (c != 0xffff) {
-            entity_px[cur_index] = TOFIX((uint32_t)(c - entity_colx_x1[cur_id]));
+            entity_px[cur_index] = TOFIX((xcoord_t)(c - entity_colx_x1[cur_id]));
             entity_vx[cur_index] = 0;
         } else {
             px += vx;
@@ -219,12 +219,12 @@ void __fastcall__ entity_compute_position_x(void) {
         }
         c = entity_left_collision(0);
         if (c != 0xffff) {
-            entity_px[cur_index] = TOFIX((uint32_t)(c + 0x10 - entity_colx_x0[cur_id]));
+            entity_px[cur_index] = TOFIX((xcoord_t)(c + 0x10 - entity_colx_x0[cur_id]));
         }
     } else {
         c = entity_left_collision(vx);
         if (c != 0xffff) {
-            entity_px[cur_index] = TOFIX((uint32_t)(c + 0x10 - entity_colx_x0[cur_id]));
+            entity_px[cur_index] = TOFIX((xcoord_t)(c + 0x10 - entity_colx_x0[cur_id]));
             entity_vx[cur_index] = 0;
         } else {
             px += vx;
@@ -232,7 +232,7 @@ void __fastcall__ entity_compute_position_x(void) {
         }
         c = entity_right_collision(0);
         if (c != 0xffff) {
-            entity_px[cur_index] = TOFIX((uint32_t)(c - entity_colx_x1[cur_id]));
+            entity_px[cur_index] = TOFIX((xcoord_t)(c - entity_colx_x1[cur_id]));
         }
     }
 }
@@ -341,7 +341,7 @@ void __fastcall__ entity_taken_reset(void) {
 void __fastcall__ entity_draw(uint8_t index) {
     static uint8_t id, sprid, attr;
     static uint16_t camx;
-    static uint32_t camera;
+    static xcoord_t camera;
     id = entity_id[index];
 
     if (id == 0) {
@@ -438,7 +438,7 @@ void __fastcall__ entity_set_player(uint16_t x, uint8_t y, uint8_t chkpoint) {
     entity_ay[0] = 0;
     entity_vx[0] = 0;
     entity_vy[0] = 0;
-    entity_px[0] = TOFIX((uint32_t)x);
+    entity_px[0] = TOFIX((xcoord_t)x);
     entity_py[0] = TOFIX(y);
     entity_on_ground[0] = 1;
     entity_sprite_id[0] = entity_sprites[0][0];
@@ -466,7 +466,7 @@ void __fastcall__ entity_new(uint8_t id, uint16_t x, uint8_t y) {
             entity_ay[i] = 0;
             entity_vx[i] = 0;
             entity_vy[i] = 0;
-            entity_px[i] = TOFIX((uint32_t)x);
+            entity_px[i] = TOFIX((xcoord_t)x);
             entity_py[i] = TOFIX(y);
             entity_dir[i] = 0;
             entity_anim[i] = 0;
