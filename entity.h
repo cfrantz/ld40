@@ -21,6 +21,11 @@ enum PlayerState {
     PLAYER_DONE,
 };
 
+#define FIXPOINT    (8)
+#define FRAC(i,p)     (((i)<<FIXPOINT) + (( (p)<<FIXPOINT ) / 100 ) )
+#define TOFIX(v)    ((v) << FIXPOINT)
+#define TOINT(v)    ((v) >> FIXPOINT)
+
 void __fastcall__ entity_newframe(void);
 void __fastcall__ entity_taken_reset(void);
 void __fastcall__ entity_compute_position(uint8_t index);
