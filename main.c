@@ -113,14 +113,11 @@ void main(void)
                         break;
                     }
                 } else {
-                    tm = readreg8(0x4019);
                     entity_update_all();
                     entity_compute_position(0);
-                    tm = readreg8(0x4019);
                 }
                 entity_draw(0);
                 entity_draw_all();
-                //entity_check_load_screen();
                 if (player_pad_changed & PAD_START)
                     game_state = PAUSE;
 
