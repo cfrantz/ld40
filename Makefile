@@ -6,7 +6,8 @@ NESLIB=/usr/local/cc65/share/cc65/lib/nes.lib
 
 SRCS=main.c bcd.c entity.c nesutil.c chars.c sprites.c screen.c \
 	 levels.c \
-	 level1.c
+	 level1.c \
+	 level2.c
 OBJS=$(SRCS:.c=.o)
 ASMS=$(SRCS:.c=.s)
 
