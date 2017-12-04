@@ -21,8 +21,9 @@ const unsigned char palette[32]={
     0x0F, 0x2c, 0x28, 0x30, // xx, cyan, yellow, white
 };
 
-uint8_t hud[32] =
-"Keys:0  Energy:0000  Score:00000";
+uint8_t hud[65] =
+"Energy                     Score"
+"  0000                     00000";
 uint16_t framenum;
 uint8_t load_bank;
 uint8_t player_pad;
@@ -55,8 +56,8 @@ void main(void)
     static uint8_t state;
     bank_bg(0);
     bank_spr(1);
-    set_vram_update(32, hud);
     ppu_off();
+    vram_puts(0, 1, hud);
     pal_all(palette);//set palette for sprites
     oam_size(1);
 
@@ -117,7 +118,6 @@ void main(void)
                 }
                 entity_draw(0);
                 entity_draw_all();
-                entity_draw_stats();
                 //entity_check_load_screen();
                 if (player_pad_changed & PAD_START)
                     game_state = PAUSE;

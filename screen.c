@@ -7,6 +7,12 @@
 uint8_t ppu_macro_len;
 uint8_t ppu_macro[64];
 
+void ppu_macro_addr(uint16_t addr, uint8_t len) {
+    ppu_macro[ppu_macro_len++] = addr >> 8;
+    ppu_macro[ppu_macro_len++] = addr;
+    ppu_macro[ppu_macro_len++] = len;
+}
+
 void prepare_ppu_macro(uint8_t xx, uint8_t pal) {
     static uint8_t scrn, x0, x, y, i, a, t, attr;
     static uint16_t addr;

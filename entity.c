@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "levels.h"
 #include "screen.h"
+#include "neslib.h"
 #include "nesutil.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -363,11 +364,12 @@ void __fastcall__ entity_draw(uint8_t index) {
         if (scroll_pos) {
             prepare_ppu_macro(scroll_pos, true);
             scroll_pos = 0;
-        }
-        if ((player_camera ^ player_oldpos) & 16) {
+        } else if ((player_camera ^ player_oldpos) & 16) {
             // Tile position + next screen to the right
             scroll_pos = (player_camera / 16) + 0x10;
             prepare_ppu_macro(scroll_pos, false);
+        } else {
+            entity_draw_stats();
         }
         if ((player_camera ^ player_oldpos) & 0xFF00) {
             // Spawn next screen
@@ -406,40 +408,24 @@ void __fastcall__ entity_draw(uint8_t index) {
 }
 
 void __fastcall__ entity_draw_stats(void) {
-#if 0
-    static uint16_t en;
-    spridx = oam_spr(16, 8, 0x0b, 3, spridx);
-    spridx = oam_spr(24, 8, 0xe1 + player_keys * 2, 3, spridx);
-
-
-    en = player_energy;
-    spridx = oam_spr(40, 8, 0x25, 3, spridx);
-    spridx = oam_spr(72, 8, 0xe1 + (en & 0x0F) * 2, 3, spridx);
-    en >>= 3;
-    spridx = oam_spr(64, 8, 0xe1 + (en & 0x1E), 3, spridx);
-    en >>= 4;
-    spridx = oam_spr(56, 8, 0xe1 + (en & 0x1E), 3, spridx);
-    en >>= 4;
-    spridx = oam_spr(48, 8, 0xe1 + (en & 0x1E), 3, spridx);
-    extern uint8_t hud[32];
     static uint8_t val;
-    hud[5] = 0x30 + player_keys;
 
-    val = player_energy;
-    hud[18] = 0x30 + (val & 0x0F); val >>= 4;
-    hud[17] = 0x30 + (val & 0x0F);
+    ppu_macro_addr(0x2042, 4);
     val = player_energy >> 8;
-    hud[16] = 0x30 + (val & 0x0F); val >>= 4;
-    hud[15] = 0x30 + (val & 0x0F);
+    ppu_macro_data(0x30 | (val >> 4));
+    ppu_macro_data(0x30 | (val & 0x0F));
+    val = player_energy;
+    ppu_macro_data(0x30 | (val >> 4));
+    ppu_macro_data(0x30 | (val & 0x0F));
 
-    hud[31] = 0x30;
-    val = player_score;
-    hud[30] = 0x30 + (val & 0x0F); val >>= 4;
-    hud[29] = 0x30 + (val & 0x0F); 
+    ppu_macro_addr(0x2060-5, 4);
     val = player_score >> 8;
-    hud[28] = 0x30 + (val & 0x0F); val >>= 4;
-    hud[27] = 0x30 + (val & 0x0F);
-#endif
+    ppu_macro_data(0x30 | (val >> 4));
+    ppu_macro_data(0x30 | (val & 0x0F));
+    val = player_score;
+    ppu_macro_data(0x30 | (val >> 4));
+    ppu_macro_data(0x30 | (val & 0x0F));
+    val = player_score;
 }
 
 
