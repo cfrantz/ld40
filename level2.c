@@ -168,7 +168,7 @@ const uint8_t level2[][16*16] = {
 "@@@@@@@@@@@@@@@@"  // A
 "GGGG@@@@@@GGGGGG"  // B
 "FFFF@@@@@@FFFFFF"  // C
-"",
+"\x49\x04\x99\x04",
 // LVLDAT2 -- screen 05 
 "eeeeeeeeeeeeeeee"  // 0
 "@@@@@@@@@@@@@@@@"  // 1
@@ -183,7 +183,7 @@ const uint8_t level2[][16*16] = {
 "@@@@d@@@@d@@@@@@"  // A
 "GGG@G@GGGGGGGGGG"  // B
 "FFF@F@FFFFFFFFFF"  // C
-"\x8a\x01",
+"\x0a\x07\x8a\x01",
 
 // LVLDAT2 -- screen 06 
 "eeeeeeg         "  // 0
@@ -199,7 +199,7 @@ const uint8_t level2[][16*16] = {
 "@@@@@@@@@@@@@A@F"  // A
 "GGGGGGGGGGGGGGGF"  // B
 "FFFFFFFFFFFFFFFF"  // C
-"\x2a\x03",
+"\x2a\x03\x81\x04",
 
 // LVLDAT2 -- screen 07
 "                "  // 0
@@ -231,7 +231,7 @@ const uint8_t level2[][16*16] = {
 "gggggggggggggggg"  // A
 "FFFFFFFFFFFFFFFF"  // B
 "FFFFFFFFFFFFFFFF"  // C
-"",
+"\x59\x03",
 
 // LVLDAT2 -- screen 08
 "                "  // 0
