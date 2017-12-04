@@ -91,6 +91,7 @@ void main(void)
             case LOAD_NEXT:
                 ppu_off();
                 set_mmc3_low_bank(load_bank);
+                entity_kill_all();
                 copy_to_vram_simple(0, 0);
                 copy_to_vram_simple(1, 1);
                 entity_spawn_screen(0);

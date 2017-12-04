@@ -40,6 +40,7 @@ uint8_t __fastcall__ entity_player_addpoints(void);
 void __fastcall__ entity_new(uint8_t id, uint16_t x, uint8_t y);
 void __fastcall__ entity_update(void);
 void __fastcall__ entity_update_all(void);
+void __fastcall__ entity_kill_all(void);
 
 void __fastcall__ entity_draw_all(void);
 void __fastcall__ entity_draw_stats(void);
