@@ -92,6 +92,7 @@ void main(void)
                 ppu_off();
                 set_mmc3_low_bank(load_bank);
                 copy_to_vram_simple(0, 0);
+                copy_to_vram_simple(1, 1);
                 entity_spawn_screen(0);
                 entity_taken_reset();
                 entity_set_player(header0.start_px, header0.start_py, true);
