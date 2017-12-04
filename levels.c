@@ -175,9 +175,6 @@ const uint8_t level0[][16*16] = {
 };
 #pragma rodata-name(pop)
 
-#pragma rodata-name(push, "LVLDAT2")
-const char name2[] = "LVLDAT2";
-#pragma rodata-name(pop)
 
 #pragma rodata-name(push, "LVLDAT3")
 const char name3[] = "LVLDAT3";

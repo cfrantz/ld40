@@ -87,7 +87,7 @@ ____,____,____,____,____,____,____,____,____,____,____,____,____,____,____,____,
     1,         // start room
     0, 0,      // start position in the map (above)
     64, 128,   // pixel location in start room
-    1,         // Next bank
+    2,         // Next bank
 };
 
 const uint8_t level1[][16*16] = {
@@ -206,7 +206,7 @@ const uint8_t level1[][16*16] = {
 "ggggggg  ggggggg"  // A
 "FFFFFFF  FFFFFFF"  // B
 "FFFFFFF  FFFFFFF"  // B
-"",
+"\x66\x04",
 
 // LVLDAT1 -- screen 07
 "                "  // 0
